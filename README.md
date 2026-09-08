@@ -2,7 +2,7 @@
 
 
 
-Progetto per il corso di \*\*Tecnologie dei Dati e del Linguaggio\*\*.
+Progetto per il corso di Tecnologie dei Dati e del Linguaggio.
 
 
 
