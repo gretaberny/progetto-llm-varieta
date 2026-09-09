@@ -3,6 +3,12 @@
 Progetto per il corso di **Tecnologie dei Dati e del Linguaggio**.
 
 ---
+Descrizione delle principali cartelle:
+- data/ contiene il dataset finale dei 45 testi generati.
+- prompts/ contiene i nove prompt utilizzati nell'esperimento.
+- code/ contiene gli script Python per la generazione dei testi e per l'analisi.
+- results/ contiene i risultati numerici e i grafici.
+---
 
 ## 1. Obiettivo del progetto
 
@@ -180,54 +186,25 @@ La varietà viene misurata attraverso la similarità lessicale basata su TF-IDF 
 A causa della dimensione ridotta del campione, l'analisi è stata mantenuta descrittiva ed esplorativa.
 Non vengono quindi formulate conclusioni sulla significatività statistica dei risultati.
 
-## 11. Struttura del repository
-
-progetto-llm-varieta/
-│
-├── README.md
-├── requirements.txt
-├── .gitignore
-│
-├── data/
-│   └── dataset_completo.csv
-│
-├── prompts/
-│   └── prompts.txt
-│
-├── code/
-│   ├── generazione_qwen.py
-│   └── analisi_varieta.py
-│
-└── results/
-    ├── riepilogo_varieta.csv
-    ├── risultati_varieta_per_condizione.csv
-    ├── similarita_coppie.csv
-    ├── grafico_varieta_media_ABC.png
-    └── grafico_varieta_per_tema.png
-
 ## 12. Riproduzione dell'analisi
 
-L'analisi può essere riprodotta utilizzando lo script:
-
-code/analisi_varieta.py
+L'analisi può essere riprodotta utilizzando lo script: code/analisi_varieta.py
 
 Lo script:
 
-carica data/dataset_completo.csv;
-controlla la struttura del dataset;
-costruisce la rappresentazione TF-IDF;
-calcola le similarità coseno;
-calcola le 10 similarità a coppie per ogni condizione;
-calcola la similarità media;
-calcola la varietà;
-salva i risultati in formato CSV;
-genera i due grafici.
+- carica data/dataset_completo.csv;
+- controlla la struttura del dataset;
+- costruisce la rappresentazione TF-IDF;
+- calcola le similarità coseno;
+- calcola le 10 similarità a coppie per ogni condizione;
+- calcola la similarità media;
+- calcola la varietà;
+- salva i risultati in formato CSV;
+- genera i due grafici.
 
 I risultati vengono salvati nella cartella results/.
 
-La generazione automatica dei testi può invece essere eseguita tramite:
-
-code/generazione_qwen.py
+La generazione automatica dei testi può invece essere eseguita tramite: code/generazione_qwen.py
 
 Questo script utilizza il modello Qwen/Qwen2.5-0.5B-Instruct, legge i prompt da prompts/prompts.txt e genera 5 testi per ciascuno dei 9 prompt.
 
@@ -239,5 +216,3 @@ In particolare, passando da prompt generici a prompt più specifici, la similari
 I risultati ottenuti sono quindi coerenti con l'ipotesi secondo cui una maggiore specificità del prompt restringa le possibili modalità di risposta del modello.
 
 Data la dimensione limitata del dataset e i limiti della misura utilizzata, il risultato deve essere considerato come un'indicazione esplorativa.
-
-ge=(1, 2))
