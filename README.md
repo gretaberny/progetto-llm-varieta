@@ -186,7 +186,7 @@ La varietà viene misurata attraverso la similarità lessicale basata su TF-IDF 
 A causa della dimensione ridotta del campione, l'analisi è stata mantenuta descrittiva ed esplorativa.
 Non vengono quindi formulate conclusioni sulla significatività statistica dei risultati.
 
-## 12. Riproduzione dell'analisi
+## 11. Riproduzione dell'analisi
 
 L'analisi può essere riprodotta utilizzando lo script: code/analisi_varieta.py
 
@@ -208,7 +208,7 @@ La generazione automatica dei testi può invece essere eseguita tramite: code/ge
 
 Questo script utilizza il modello Qwen/Qwen2.5-0.5B-Instruct, legge i prompt da prompts/prompts.txt e genera 5 testi per ciascuno dei 9 prompt.
 
-## 13. Conclusione
+## 12. Conclusione
 
 L'esperimento mostra, nel campione analizzato, una relazione tra il livello di specificità dei prompt e la varietà degli output.
 In particolare, passando da prompt generici a prompt più specifici, la similarità media tra i testi aumenta e la varietà diminuisce.
