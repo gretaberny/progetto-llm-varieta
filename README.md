@@ -84,11 +84,11 @@ La varietà degli output è stata stimata utilizzando la **similarità coseno** 
 
 ### TF-IDF
 
-Ogni testo viene trasformato in un vettore numerico tramite:
+Ogni testo viene trasformato in un vettore numerico tramite TF-IDF.
 Sono quindi considerati sia:
 
-unigrammi, cioè singole parole;
-bigrammi, cioè coppie consecutive di parole.
+- unigrammi, cioè singole parole;
+- bigrammi, cioè coppie consecutive di parole.
 
 La rappresentazione TF-IDF permette di dare maggiore importanza alle parole caratteristiche dei singoli testi e minore importanza a quelle molto frequenti nell'intero corpus.
 
@@ -123,12 +123,11 @@ similarità bassa → varietà alta.
 
 La varietà media ottenuta per i tre livelli di specificità è:
 
-| Livello               | Similarità media | Varietà media |
-| --------------------- | ---------------: | ------------: |
-| A – bassa specificità |         0.065676 |  **0.934324** |
-| B – media specificità |         0.124289 |  **0.875711** |
-| C – alta specificità  |         0.227534 |  **0.772466** |
-
+| Livello | Similarità media | Varietà media |
+|---|---:|---:|
+| A – bassa specificità | 0.065676 | **0.934324** |
+| B – media specificità | 0.124289 | **0.875711** |
+| C – alta specificità | 0.227534 | **0.772466** |
 
 Si osserva una diminuzione progressiva della varietà:
 
@@ -142,14 +141,13 @@ La stessa tendenza A > B > C è osservata anche considerando separatamente i tre
 
 ## 8. Grafici
 
-Varietà media per livello di specificità
+### Varietà media per livello di specificità
 
-<img width="2370" height="1466" alt="grafico_varieta_per_tema" src="https://github.com/user-attachments/assets/abdcfc91-a300-4161-9a9d-cbf07c79b566" />
+![Varietà media per livello di specificità](results/grafico_varieta_media_ABC.png)
 
-Varietà per tema e livello di specificità
+### Varietà per tema e livello di specificità
 
-<img width="2370" height="1466" alt="grafico_varieta_per_tema" src="https://github.com/user-attachments/assets/231e1b4e-2ad6-4f1e-a067-79163bed6031" />
-
+![Varietà per tema e livello di specificità](results/grafico_varieta_per_tema.png)
 
 ## 9. Interpretazione dei risultati
 
@@ -188,7 +186,7 @@ Non vengono quindi formulate conclusioni sulla significatività statistica dei r
 
 ## 11. Riproduzione dell'analisi
 
-L'analisi può essere riprodotta utilizzando lo script: code/analisi_varieta.py
+L'analisi può essere riprodotta utilizzando lo script: `code/analisi_varieta.py`
 
 Lo script:
 
@@ -202,9 +200,9 @@ Lo script:
 - salva i risultati in formato CSV;
 - genera i due grafici.
 
-I risultati vengono salvati nella cartella results/.
+I risultati vengono salvati nella cartella `results/`.
 
-La generazione automatica dei testi può invece essere eseguita tramite: code/generazione_qwen.py
+La generazione automatica dei testi può invece essere eseguita tramite: `code/generazione_qwen.py`
 
 Questo script utilizza il modello Qwen/Qwen2.5-0.5B-Instruct, legge i prompt da prompts/prompts.txt e genera 5 testi per ciascuno dei 9 prompt.
 
