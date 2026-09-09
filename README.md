@@ -1,493 +1,270 @@
 # Progetto LLM e varietà degli output
 
+Progetto per il corso di **Tecnologie dei Dati e del Linguaggio**.
 
-
-Progetto per il corso di Tecnologie dei Dati e del Linguaggio.
-
-
+---
 
 ## 1. Obiettivo del progetto
 
+Il progetto analizza come il livello di specificità di un prompt influenzi la varietà degli output generati da un Large Language Model (LLM).
 
+L'idea è confrontare testi generati a partire da prompt con tre diversi livelli di specificità:
 
-Questo progetto analizza il rapporto tra la **specificità del prompt** e la **varietà degli output** prodotti da un Large Language Model (LLM).
+- **A – bassa specificità**
+- **B – media specificità**
+- **C – alta specificità**
 
-
-
-L'idea di base è verificare se, aumentando il numero di vincoli e di indicazioni presenti nel prompt, gli output generati dal modello tendano a diventare più simili tra loro.
-
-
-
-L'esperimento è stato progettato come uno studio esplorativo, con generazione automatica dei testi, una metrica quantitativa di varietà e un confronto tra diversi livelli di specificità.
-
-
+L'obiettivo è verificare se l'aumento dei vincoli presenti nel prompt porti a una diminuzione della varietà degli output.
 
 ---
-
-
 
 ## 2. Domanda di ricerca
 
-
-
 > **Come cambia la varietà degli output di un LLM all'aumentare del livello di specificità del prompt?**
 
-
-
 ---
-
-
 
 ## 3. Ipotesi
 
-
-
 > **All'aumentare della specificità del prompt, la varietà degli output generati dal LLM tende a diminuire, perché un numero maggiore di vincoli limita le possibili modalità di risposta.**
 
-
-
-In altre parole, l'ipotesi prevede che prompt più dettagliati portino il modello verso un insieme più ristretto di possibili risposte.
-
-
-
 ---
 
+## 4. Disegno sperimentale
 
-
-## 4. Disegno dell'esperimento
-
-
-
-Sono stati scelti tre temi narrativi:
-
-
+Sono stati utilizzati tre temi narrativi:
 
 - **Mistero**
-
 - **Viaggio**
-
 - **Sogno**
 
+Per ciascun tema sono stati costruiti tre prompt con diverso livello di specificità:
 
+| A | Prompt generico, con pochi vincoli |
+| B | Prompt con un livello intermedio di specificità |
+| C | Prompt molto specifico, con numerosi vincoli |
 
-Per ogni tema sono stati definiti tre livelli di specificità:
+Per ogni combinazione di tema e livello sono state generate **5 storie**.
 
+Il dataset complessivo contiene quindi:
 
+**3 temi × 3 livelli × 5 generazioni = 45 testi**
 
-- **A = bassa specificità**
-
-- **B = media specificità**
-
-- **C = alta specificità**
-
-
-
-Sono quindi presenti:
-
-
-
-**3 temi × 3 livelli = 9 prompt**
-
-
-
-Ogni prompt è stato utilizzato per **5 generazioni**, ottenendo:
-
-
-
-**9 prompt × 5 generazioni = 45 testi**
-
-
-
-Il dataset finale contiene quindi **45 output generati automaticamente**.
-
-
-
-### Modello utilizzato
-
-
-
-La generazione è stata effettuata con:
-
-
-
-Qwen/Qwen2.5-0.5B-Instruct
-
-
-
-La generazione originale è stata eseguita in **Google Colab** utilizzando una **GPU T4**.
-
-
-
-I principali parametri di generazione sono stati:
-
-
-
-- `temperature = 0.8`
-
-- `top\_p = 0.95`
-
-- `max\_new\_tokens = 700`
-
-- `do\_sample = True`
-
-
-
-L'utilizzo della generazione automatica permette di applicare la stessa procedura a tutti i prompt e di rendere l'esperimento più riproducibile.
-
-
+La scelta di 5 generazioni per condizione è stata adottata per mantenere l'esperimento gestibile e consentire comunque il confronto tra più output della stessa condizione.
 
 ---
 
+## 5. Modello e generazione dei testi
 
+Per la generazione automatica dei testi è stato utilizzato:
 
-## 5. Misura della varietà
+**Qwen/Qwen2.5-0.5B-Instruct**
 
+Il modello è stato eseguito in **Google Colab** utilizzando una GPU **NVIDIA T4**.
 
+La generazione è stata effettuata automaticamente a partire dai nove prompt presenti nella cartella `prompts/`.
 
-Per misurare la varietà degli output è stata utilizzata una procedura basata su **TF-IDF** e **similarità coseno**.
+Parametri principali utilizzati:
 
+- `max_new_tokens = 700`
+- `do_sample = True`
+- `temperature = 0.8`
+- `top_p = 0.95`
 
+L'utilizzo di `do_sample=True` rende la generazione stocastica, permettendo al modello di produrre output differenti anche a partire dallo stesso prompt.
 
-### 5.1 Rappresentazione dei testi
+Nel codice di riproduzione sono impostati dei seed per rendere la procedura più controllata. Tuttavia, la riproduzione esatta degli stessi testi può dipendere anche dall'hardware e dalle versioni delle librerie utilizzate.
 
+I risultati riportati nel progetto sono calcolati sul dataset `data/dataset_completo.csv` incluso nel repository.
 
+---
 
-I testi vengono trasformati in vettori numerici attraverso **TF-IDF**, utilizzando sia unigrammi sia bigrammi:
+## 6. Misurazione della varietà
 
+La varietà degli output è stata stimata utilizzando la **similarità coseno** tra rappresentazioni **TF-IDF** dei testi.
 
+### TF-IDF
 
-ngram\_range=(1, 2)
+Ogni testo viene trasformato in un vettore numerico tramite:
+Sono quindi considerati sia:
 
+unigrammi, cioè singole parole;
+bigrammi, cioè coppie consecutive di parole.
 
+La rappresentazione TF-IDF permette di dare maggiore importanza alle parole caratteristiche dei singoli testi e minore importanza a quelle molto frequenti nell'intero corpus.
 
-In questo modo ogni testo viene rappresentato in base alla presenza e all'importanza delle parole e delle coppie di parole.
+Similarità coseno
 
+La similarità coseno misura quanto due vettori siano simili.
 
+Nel caso considerato, valori più vicini a 1 indicano una maggiore somiglianza tra i testi, mentre valori più vicini a 0 indicano una minore somiglianza.
 
-### 5.2 Similarità coseno
+Per ogni condizione sperimentale sono presenti 5 testi.
 
+I 5 testi generano:
 
+5 × 4 / 2 = 10 confronti a coppie
 
-Successivamente viene calcolata la **similarità coseno** tra le rappresentazioni dei testi.
+Per ogni coppia viene calcolata la similarità coseno e successivamente viene calcolata la similarità media della condizione.
 
+Complessivamente vengono quindi analizzati:
 
-
-La similarità coseno assume valori compresi tra 0 e 1:
-
-
-
-- valori vicini a **1** → testi più simili;
-
-- valori vicini a **0** → testi meno simili.
-
-
-
-### 5.3 Confronto tra le generazioni
-
-
-
-Per ogni condizione, cioè per ogni combinazione:
-
-
-
-**tema × livello di specificità**
-
-
-
-sono presenti 5 generazioni.
-
-
-
-Le 5 generazioni vengono confrontate a coppie.
-
-
-
-Il numero di confronti è:
-
-
-
-**5 × 4 / 2 = 10 confronti per condizione**
-
-
-
-Sono quindi calcolate 10 similarità per ciascuna delle 9 condizioni.
-
-
-
-### 5.4 Definizione della varietà
-
-
+9 condizioni × 10 confronti = 90 confronti a coppie
 
 La varietà viene definita come:
 
-
-
-> **Varietà = 1 − similarità media**
-
-
+Varietà = 1 − similarità media
 
 Di conseguenza:
 
+similarità alta → varietà bassa;
+similarità bassa → varietà alta.
 
+## 7. Risultati
 
-- similarità media alta → varietà bassa;
+La varietà media ottenuta per i tre livelli di specificità è:
 
-- similarità media bassa → varietà alta.
+Livello	Similarità media	Varietà media
+A – bassa specificità	0.065676	0.934324
+B – media specificità	0.124289	0.875711
+C – alta specificità	0.227534	0.772466
 
+Si osserva una diminuzione progressiva della varietà:
 
+A > B > C
 
-Questa misura considera soprattutto la **somiglianza lessicale** tra i testi.
+La varietà passa da 0.934 per i prompt a bassa specificità a 0.772 per i prompt ad alta specificità.
 
+La diminuzione assoluta è di circa 0.162, corrispondente a una riduzione relativa di circa 17% rispetto al livello A.
 
+La stessa tendenza A > B > C è osservata anche considerando separatamente i tre temi.
 
----
+## 8. Grafici
 
+Varietà media per livello di specificità
 
+Varietà per tema e livello di specificità
 
-## 6. Risultati
+## 9. Interpretazione dei risultati
 
+I risultati ottenuti sono coerenti con l'ipotesi di ricerca.
 
+All'aumentare della specificità del prompt, la similarità media tra gli output aumenta e, di conseguenza, la varietà diminuisce.
 
-### 6.1 Varietà media per livello di specificità
+Questo suggerisce che l'introduzione di un numero maggiore di vincoli nel prompt possa restringere lo spazio delle possibili risposte del modello.
 
+La tendenza è presente in tutti e tre i temi analizzati:
 
+Mistero: la varietà diminuisce da 0.931 a 0.786;
+Viaggio: la varietà diminuisce da 0.925 a 0.801;
+Sogno: la varietà diminuisce da 0.948 a 0.730.
 
-| Livello | Varietà media |
+Il risultato più evidente si osserva nel tema Sogno, mentre il tema Viaggio presenta una diminuzione leggermente più contenuta.
 
-|---|---:|
+I risultati devono comunque essere interpretati come evidenza esplorativa e non come una dimostrazione generale del comportamento di tutti gli LLM.
 
-| A – bassa specificità | 0.934 |
-
-| B – media specificità | 0.876 |
-
-| C – alta specificità | 0.772 |
-
-
-
-La varietà diminuisce progressivamente passando da A a B e da B a C.
-
-
-
-Il valore medio passa da **0.934** nel livello A a **0.772** nel livello C.
-
-
-
-La diminuzione complessiva è quindi di circa **0.162 punti**, corrispondente a una diminuzione relativa di circa **17%** rispetto al livello A.
-
-
-
-### 6.2 Risultati per tema
-
-
-
-| Tema | A | B | C |
-
-|---|---:|---:|---:|
-
-| Mistero | 0.931 | 0.864 | 0.786 |
-
-| Viaggio | 0.925 | 0.863 | 0.801 |
-
-| Sogno | 0.948 | 0.900 | 0.730 |
-
-
-
-La stessa tendenza **A > B > C** è presente in tutti e tre i temi.
-
-
-
-Questo significa che, nel campione analizzato, il passaggio da prompt meno specifici a prompt più specifici è associato a una riduzione della varietà degli output.
-
-
-
-
-
-
-## 7. Grafici
-
-
-
-### Varietà media per livello di specificità
-
-
-
-!\[Varietà media degli output per livello di specificità](results/grafico\_varieta\_media\_ABC.png)
-
-
-
-### Varietà degli output per tema e livello di specificità
-
-
-
-!\[Varietà degli output per tema e livello di specificità](results/grafico\_varieta\_per\_tema.png)
-
-
-
----
-
-
-
-## 8. Interpretazione dei risultati
-
-
-
-I risultati ottenuti nel campione analizzato sono **coerenti con l'ipotesi di ricerca**.
-
-
-
-All'aumentare della specificità del prompt si osserva una diminuzione della varietà media degli output:
-
-
-
-**A → B → C**
-
-
-
-La tendenza è presente in tutti e tre i temi considerati.
-
-
-
-Il risultato può essere interpretato in questo modo: aumentando il numero di vincoli presenti nel prompt, il modello dispone di un insieme più ristretto di possibilità narrative e, di conseguenza, le risposte tendono a essere più simili tra loro.
-
-
-
-È però importante sottolineare che questo risultato costituisce **un'evidenza esplorativa** e non permette di affermare che la relazione valga per tutti gli LLM o per qualsiasi tipo di prompt.
-
-
-
----
-
-
-
-## 9. Limiti dello studio
-
-
+## 10. Limiti dell'esperimento
 
 L'esperimento presenta alcuni limiti.
 
+Dimensione del dataset
 
+Il dataset contiene 45 testi, con 5 generazioni per ciascuna condizione. Si tratta quindi di un campione relativamente piccolo.
 
-### Campione ridotto
+Per questo motivo i risultati non possono essere generalizzati a tutti i possibili prompt, modelli o condizioni di generazione.
 
+Misura della varietà
 
+La varietà viene misurata attraverso la similarità lessicale basata su TF-IDF e similarità coseno.
 
-Sono stati analizzati 45 testi, con 5 generazioni per ciascuna condizione.
+Questa misura considera soprattutto la sovrapposizione delle caratteristiche testuali e non permette di valutare completamente aspetti più complessi della varietà, come:
 
+struttura narrativa;
+originalità delle idee;
+stile;
+significato semantico;
+sviluppo dei personaggi.
+Prompt non completamente controllati
 
+I livelli A, B e C differiscono non soltanto per il numero di vincoli, ma anche per il tipo e il contenuto delle informazioni specificate.
 
-Un campione più grande permetterebbe di ottenere una valutazione più robusta della tendenza osservata.
+Di conseguenza, l'effetto osservato non può essere attribuito esclusivamente al numero di vincoli presenti nel prompt.
 
+Assenza di test statistici inferenziali
 
+A causa della dimensione ridotta del campione, l'analisi è stata mantenuta descrittiva ed esplorativa.
 
-\### Un solo modello
+Non vengono quindi formulate conclusioni sulla significatività statistica dei risultati.
 
-
-
-L'esperimento utilizza un solo modello:
-
-
-
-Qwen/Qwen2.5-0.5B-Instruct
-
-
-
-Non è quindi possibile stabilire se lo stesso comportamento si verifichi anche con altri LLM.
-
-
-
-### Limiti della metrica
-
-
-
-TF-IDF e similarità coseno misurano principalmente la somiglianza sulla base della rappresentazione lessicale.
-
-
-
-Due testi possono essere semanticamente simili pur utilizzando parole diverse, oppure possono condividere molte parole pur presentando contenuti differenti.
-
-
-
-Per questo motivo la misura utilizzata non cattura perfettamente la similarità semantica.
-
-
-
-\### Più caratteristiche cambiano contemporaneamente
-
-
-
-Passando dal livello A al livello B e poi al livello C cambiano contemporaneamente diverse caratteristiche dei prompt, tra cui:
-
-
-
-- personaggi;
-
-- ambientazione;
-
-- tono;
-
-- lunghezza richiesta;
-
-- eventi;
-
-- dialoghi;
-
-- vincoli narrativi;
-
-- struttura del finale.
-
-
-
-L'esperimento misura quindi l'effetto complessivo dell'aumento della specificità e non l'effetto isolato di un singolo vincolo.
-
-
-
-\### Nessun test di significatività
-
-
-
-Dato il carattere esplorativo dell'esperimento e la dimensione ridotta del campione, non vengono formulate conclusioni di significatività statistica.
-
-
-
----
-
-
-
-## 10. Struttura del repository
-
-
-
-```text
+## 11. Struttura del repository
 
 progetto-llm-varieta/
-
+│
 ├── README.md
-
 ├── requirements.txt
-
+├── .gitignore
+│
 ├── data/
-
-│   └── dataset\_completo.csv
-
+│   └── dataset_completo.csv
+│
 ├── prompts/
-
 │   └── prompts.txt
-
+│
 ├── code/
-
-│   ├── generazione\_qwen.py
-
-│   └── analisi\_varieta.py
-
+│   ├── generazione_qwen.py
+│   └── analisi_varieta.py
+│
 └── results/
+    ├── riepilogo_varieta.csv
+    ├── risultati_varieta_per_condizione.csv
+    ├── similarita_coppie.csv
+    ├── grafico_varieta_media_ABC.png
+    └── grafico_varieta_per_tema.png
 
-&#x20;   ├── riepilogo\_varieta.csv
+## 12. Riproduzione dell'analisi
 
-&#x20;   ├── risultati\_varieta\_per\_condizione.csv
+L'analisi può essere riprodotta utilizzando lo script:
 
-&#x20;   ├── similarita\_coppie.csv
+python code/analisi_varieta.py
 
-&#x20;   ├── grafico\_varieta\_media\_ABC.png
+Lo script:
 
-&#x20;   └── grafico\_varieta\_per\_tema.png
+carica data/dataset_completo.csv;
+controlla la struttura del dataset;
+costruisce la rappresentazione TF-IDF;
+calcola le similarità coseno;
+calcola le 10 similarità a coppie per ogni condizione;
+calcola la similarità media;
+calcola la varietà;
+salva i risultati in formato CSV;
+genera i due grafici.
 
+I risultati vengono salvati nella cartella results/.
+
+La generazione automatica dei testi può invece essere eseguita tramite:
+
+python code/generazione_qwen.py
+
+Questo script utilizza il modello Qwen/Qwen2.5-0.5B-Instruct, legge i prompt da prompts/prompts.txt e genera 5 testi per ciascuno dei 9 prompt.
+
+Per eseguire la generazione è consigliato utilizzare un ambiente con GPU.
+
+## 13. Conclusione
+
+L'esperimento mostra, nel campione analizzato, una relazione tra il livello di specificità dei prompt e la varietà degli output.
+
+In particolare, passando da prompt generici a prompt più specifici, la similarità media tra i testi aumenta e la varietà diminuisce.
+
+I risultati ottenuti sono quindi coerenti con l'ipotesi secondo cui una maggiore specificità del prompt restringa le possibili modalità di risposta del modello.
+
+Data la dimensione limitata del dataset e i limiti della misura utilizzata, il risultato deve essere considerato come un'indicazione esplorativa che potrebbe essere verificata in esperimenti futuri utilizzando:
+
+un numero maggiore di generazioni;
+più temi;
+più modelli linguistici;
+metriche di similarità semantica oltre alla similarità lessicale;
+controlli più rigorosi sulle caratteristiche dei prompt.
+
+
+```python
+TfidfVectorizer(ngram_range=(1, 2))
